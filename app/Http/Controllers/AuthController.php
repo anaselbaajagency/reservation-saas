@@ -25,11 +25,11 @@ class AuthController extends Controller
             'password' => [
                 'required',
                 'string',
-                'min:8',
+                'min:8',              // au moins 8 caractere
                 'regex:/[A-Z]/',      // au moins une majuscule
                 'regex:/[a-z]/',      // au moins une minuscule
                 'regex:/[0-9]/',      // au moins un chiffre
-                'regex:/[@$!%*?&#]/'  // au moins un caractère spécial
+                'regex:/[@$!%*?&#]/'  // au moins un caractere spécial
                 ],
             'role' => 'required|in:client,expert',
         ]);
@@ -42,7 +42,6 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
-
         return redirect()->intended('/dashboard'); // redirection selon le rôle (peut être modifiée)
     }
 
