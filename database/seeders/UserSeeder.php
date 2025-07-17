@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
     {
         // Create admin user
         User::create([
-            'nom' => 'Admin User', // Single name field
+            'name' => 'Admin User', // Single name field
             'email' => 'admin@example.com',
             'password' => Hash::make('password'),
             'role' => 'admin',
@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
 
         // Create sample expert user
         User::create([
-            'nom' => 'Expert Consultant',
+            'name' => 'Expert Consultant',
             'email' => 'expert@example.com',
             'password' => Hash::make('password'),
             'role' => 'expert',
@@ -32,7 +32,7 @@ class UserSeeder extends Seeder
 
         // Create sample client user
         User::create([
-            'nom' => 'Client Test',
+            'name' => 'Client Test',
             'email' => 'client@example.com',
             'password' => Hash::make('password'),
             'role' => 'client',

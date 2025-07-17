@@ -1,41 +1,38 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Réinitialisation du mot de passe</title>
-    @vite('resources/css/app.css')
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h1 class="text-2xl font-bold mb-6 text-center">Réinitialisation du mot de passe</h1>
+<x-guest-layout>
+    <x-authentication-card>
+        <x-slot name="logo">
+            <x-authentication-card-logo />
+        </x-slot>
+
+        <x-validation-errors class="mb-4" />
 
         <form method="POST" action="{{ route('password.update') }}">
             @csrf
 
+            <!-- Replace $request->route('token') with $token -->
             <input type="hidden" name="token" value="{{ $token }}">
 
-            <label class="block mb-2 font-medium" for="email">Email</label>
-            <input type="email" name="email" id="email" value="{{ old('email') }}" required
-                class="w-full p-2 mb-4 border rounded @error('email') border-red-500 @enderror" />
-            @error('email')
-                <p class="text-red-500 text-sm mb-2">{{ $message }}</p>
-            @enderror
+            <div class="block">
+                <x-label for="email" value="{{ __('Email') }}" />
+                <!-- Replace $request->email with $email -->
+                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $email)" required autofocus autocomplete="username" />
+            </div>
 
-            <label class="block mb-2 font-medium" for="password">Nouveau mot de passe</label>
-            <input type="password" name="password" id="password" required
-                class="w-full p-2 mb-4 border rounded @error('password') border-red-500 @enderror" />
-            @error('password')
-                <p class="text-red-500 text-sm mb-2">{{ $message }}</p>
-            @enderror
+            <div class="mt-4">
+                <x-label for="password" value="{{ __('Password') }}" />
+                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
+            </div>
 
-            <label class="block mb-2 font-medium" for="password_confirmation">Confirmer le mot de passe</label>
-            <input type="password" name="password_confirmation" id="password_confirmation" required
-                class="w-full p-2 mb-4 border rounded" />
+            <div class="mt-4">
+                <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
+                <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
+            </div>
 
-            <button type="submit"
-                class="w-full bg-purple-600 text-white p-3 rounded hover:bg-purple-700 transition">Réinitialiser</button>
+            <div class="flex items-center justify-end mt-4">
+                <x-button>
+                    {{ __('Reset Password') }}
+                </x-button>
+            </div>
         </form>
-    </div>
-</body>
-</html>
+    </x-authentication-card>
+</x-guest-layout>

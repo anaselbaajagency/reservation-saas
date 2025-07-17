@@ -1,45 +1,48 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Connexion</title>
-    @vite('resources/css/app.css')
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h1 class="text-2xl font-bold mb-6 text-center">Connexion</h1>
+<x-guest-layout>
+    <x-authentication-card>
+        <x-slot name="logo">
+            <x-authentication-card-logo />
+        </x-slot>
+
+        <x-validation-errors class="mb-4" />
+
+        @session('status')
+            <div class="mb-4 font-medium text-sm text-green-600">
+                {{ $value }}
+            </div>
+        @endsession
 
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
-            <label class="block mb-2 font-medium" for="email">Email</label>
-            <input type="email" name="email" id="email" value="{{ old('email') }}" required
-                class="w-full p-2 mb-4 border rounded @error('email') border-red-500 @enderror" />
-            @error('email')
-                <p class="text-red-500 text-sm mb-2">{{ $message }}</p>
-            @enderror
+            <div>
+                <x-label for="email" value="{{ __('Email') }}" />
+                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+            </div>
 
-            <label class="block mb-2 font-medium" for="password">Mot de passe</label>
-            <input type="password" name="password" id="password" required
-                class="w-full p-2 mb-4 border rounded @error('password') border-red-500 @enderror" />
-            @error('password')
-                <p class="text-red-500 text-sm mb-2">{{ $message }}</p>
-            @enderror
+            <div class="mt-4">
+                <x-label for="password" value="{{ __('Password') }}" />
+                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
+            </div>
 
-            <button type="submit"
-                class="w-full bg-green-600 text-white p-3 rounded hover:bg-green-700 transition">Se connecter</button>
+            <div class="block mt-4">
+                <label for="remember_me" class="flex items-center">
+                    <x-checkbox id="remember_me" name="remember" />
+                    <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+                </label>
+            </div>
+
+            <div class="flex items-center justify-end mt-4">
+                @if (Route::has('password.request'))
+                    <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
+                        {{ __('Forgot your password?') }}
+                    </a>
+                @endif
+
+                <x-button class="ms-4">
+                    {{ __('Log in') }}
+                </x-button>
+            </div>
         </form>
-
-        <p class="mt-4 text-center text-sm">
-            Mot de passe oublié ?
-            <a href="{{ route('password.request') }}" class="text-blue-600 hover:underline">Réinitialiser</a>
-        </p>
-
-        <p class="mt-2 text-center text-sm">
-            Pas encore inscrit ?
-            <a href="{{ route('register') }}" class="text-blue-600 hover:underline">S’inscrire</a>
-        </p>
-    </div>
-</body>
-</html>
+    </x-authentication-card>
+</x-guest-layout>

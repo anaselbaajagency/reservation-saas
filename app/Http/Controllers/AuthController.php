@@ -20,7 +20,7 @@ class AuthController extends Controller
     // 📝 Enregistre l'utilisateur
     public function register(Request $request) {
         $request->validate([
-            'nom' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => [
                 'required',
@@ -35,14 +35,14 @@ class AuthController extends Controller
         ]);
 
         $user = User::create([
-            'nom' => $request->nom,
+            'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
         ]);
 
         Auth::login($user);
-        return redirect()->intended('/dashboard'); // redirection selon le rôle (peut être modifiée)
+        return redirect()->route('verification.notice');
     }
 
     // 👀 Affiche le formulaire de login
@@ -94,8 +94,12 @@ class AuthController extends Controller
     }
 
     // 👀 Affiche formulaire reset
-    public function showResetPasswordForm($token) {
-        return view('auth.reset-password', ['token' => $token]);
+    public function showResetPasswordForm(Request $request, $token)
+    {
+        return view('auth.reset-password', [
+            'token' => $token,
+            'email' => $request->email
+    ]);
     }
 
     // 🔁 Réinitialise le mot de passe

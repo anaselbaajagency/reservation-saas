@@ -1,32 +1,34 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Mot de passe oublié</title>
-    @vite('resources/css/app.css')
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h1 class="text-2xl font-bold mb-6 text-center">Mot de passe oublié</h1>
+<x-guest-layout>
+    <x-authentication-card>
+        <x-slot name="logo">
+            <x-authentication-card-logo />
+        </x-slot>
+
+        <div class="mb-4 text-sm text-gray-600">
+            {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+        </div>
+
+        @session('status')
+            <div class="mb-4 font-medium text-sm text-green-600">
+                {{ $value }}
+            </div>
+        @endsession
+
+        <x-validation-errors class="mb-4" />
 
         <form method="POST" action="{{ route('password.email') }}">
             @csrf
 
-            <label class="block mb-2 font-medium" for="email">Email</label>
-            <input type="email" name="email" id="email" required
-                class="w-full p-2 mb-4 border rounded @error('email') border-red-500 @enderror" />
-            @error('email')
-                <p class="text-red-500 text-sm mb-2">{{ $message }}</p>
-            @enderror
+            <div class="block">
+                <x-label for="email" value="{{ __('Email') }}" />
+                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+            </div>
 
-            <button type="submit"
-                class="w-full bg-yellow-600 text-white p-3 rounded hover:bg-yellow-700 transition">Envoyer lien de réinitialisation</button>
+            <div class="flex items-center justify-end mt-4">
+                <x-button>
+                    {{ __('Email Password Reset Link') }}
+                </x-button>
+            </div>
         </form>
-
-        <p class="mt-4 text-center text-sm">
-            Retour à la <a href="{{ route('login') }}" class="text-blue-600 hover:underline">connexion</a>
-        </p>
-    </div>
-</body>
-</html>
+    </x-authentication-card>
+</x-guest-layout>
