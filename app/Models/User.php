@@ -70,12 +70,22 @@ class User extends Authenticatable implements MustVerifyEmail
         return in_array($this->role, ['admin', 'superadmin']);
     }
 
+    public function isMembrevalidation(): bool
+    {
+        return in_array($this->role, 'membrevalidation');
+    }
+
     public function isExpert(): bool
     {
         return $this->role === 'expert';
     }
 
-    public function isPendingVerification(): bool
+    public function isClient(): bool
+    {
+        return $this->role === 'client';
+    }
+
+    public function isPendingverification(): bool
     {
         return $this->status === 'pending_verification';
     }

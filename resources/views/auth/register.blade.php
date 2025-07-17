@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-guest1-layout>
     <x-authentication-card>
         <x-slot name="logo">
             <x-authentication-card-logo />
@@ -101,4 +101,4 @@
             });
         });
     </script>
-</x-guest-layout>
+</x-guest1-layout>

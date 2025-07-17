@@ -12,6 +12,7 @@ use App\Models\User;
 Route::middleware('guest')->group(function () {
     // Pages publiques
     Route::view('/', 'pages.home')->name('home');
+    Route::view('/welcome', 'welcome')->name('welcome');
     Route::view('/experts', 'pages.experts')->name('experts');
     Route::view('/expert/show', 'pages.expert-show')->name('expert.show');
     Route::view('/reservation/form', 'pages.reservation-form')->name('reservation.form');
