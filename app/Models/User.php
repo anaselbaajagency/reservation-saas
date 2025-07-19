@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -17,6 +18,7 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use HasRoles; // This replaces the need for a 'role' column
 
     /**
      * The attributes that are mass assignable.
@@ -27,8 +29,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'role',
-        'status',
+        'status', // Remove 'role' as we'll use Spatie's roles
     ];
 
     /**
@@ -65,43 +66,62 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    /**
+     * Check if user has admin or superadmin role.
+     */
     public function isAdmin(): bool
     {
-        return in_array($this->role, ['admin', 'superadmin']);
+        return $this->hasAnyRole(['admin', 'superadmin']);
     }
 
+    /**
+     * Check if user has membrevalidation role.
+     */
     public function isMembrevalidation(): bool
     {
-        return in_array($this->role, 'membrevalidation');
+        return $this->hasRole('membrevalidation');
     }
 
+    /**
+     * Check if user has expert role.
+     */
     public function isExpert(): bool
     {
-        return $this->role === 'expert';
+        return $this->hasRole('expert');
     }
 
+    /**
+     * Check if user has client role.
+     */
     public function isClient(): bool
     {
-        return $this->role === 'client';
+        return $this->hasRole('client');
     }
 
-    public function isPendingverification(): bool
+    /**
+     * Check if user is pending verification.
+     */
+    public function isPendingVerification(): bool
     {
         return $this->status === 'pending_verification';
     }
 
     /**
-     * Envoie la notification de vérification email par défaut de Laravel
+     * Send email verification notification.
      */
     public function sendEmailVerificationNotification()
     {
         $this->notify(new \Illuminate\Auth\Notifications\VerifyEmail);
     }
+
+    /**
+     * Mark email as verified and activate account.
+     */
     public function markEmailAsVerified()
     {
         $this->forceFill([
             'email_verified_at' => $this->freshTimestamp(),
-            'status' => 'active' // Update status when email is verified
+            'status' => 'active',
         ])->save();
     }
 }

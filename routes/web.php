@@ -86,3 +86,16 @@ Route::get('/check-email', function (Request $request) {
         'exists' => User::where('email', $request->email)->exists()
     ]);
 });
+
+Route::middleware(['auth', 'role:super-admin'])->prefix('admin')->group(function() {
+    Route::resource('roles', 'Admin\RoleController')->except(['show']);
+});
+
+Route::middleware(['auth', 'permission:view reservations'])->group(function() {
+    Route::get('/reservations', 'ReservationController@index')->name('reservations.index');
+});
+
+Route::middleware(['auth', 'permission:create reservations'])->group(function() {
+    Route::get('/reservations/create', 'ReservationController@create')->name('reservations.create');
+    Route::post('/reservations', 'ReservationController@store')->name('reservations.store');
+});
