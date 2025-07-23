@@ -4,30 +4,35 @@ namespace Database\Seeders;
 
 use App\Models\ExpertProfile;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 use Illuminate\Database\Seeder;
 
 class ExpertProfileSeeder extends Seeder
 {
     public function run()
     {
-        // First ensure we have expert users
-        $expertUsers = User::where('role', 'expert')->get();
-        
-        // If no experts exist (like if you're running this seeder alone)
+        // First ensure the 'expert' role exists
+        Role::firstOrCreate(['name' => 'expert']);
+
+        // Get users with expert role using whereHas
+        $expertUsers = User::whereHas('roles', function($query) {
+            $query->where('name', 'expert');
+        })->get();
+
+        // If no experts exist, create 3 with the 'expert' role
         if ($expertUsers->isEmpty()) {
-            User::factory()
+            $expertUsers = User::factory()
                 ->count(3)
-                ->create(['role' => 'expert']);
-            $expertUsers = User::where('role', 'expert')->get();
+                ->create()
+                ->each(function ($user) {
+                    $user->assignRole('expert');
+                });
         }
 
+        // Create a profile for each expert user
         foreach ($expertUsers as $user) {
-            ExpertProfile::create([
+            ExpertProfile::factory()->create([
                 'user_id' => $user->id,
-                'biography' => 'Professional expert with years of experience.',
-                'hourly_rate' => rand(50, 200),
-                'verified' => true,
-                // ... other fields
             ]);
         }
     }

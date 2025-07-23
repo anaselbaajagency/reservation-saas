@@ -1,4 +1,4 @@
-<x-guest1-layout>
+<x-guest-layout>
     <x-authentication-card>
         <x-slot name="logo">
             <x-authentication-card-logo />
@@ -9,13 +9,11 @@
         <form method="POST" action="{{ route('password.update') }}">
             @csrf
 
-            <!-- Replace $request->route('token') with $token -->
-            <input type="hidden" name="token" value="{{ $token }}">
+            <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
             <div class="block">
                 <x-label for="email" value="{{ __('Email') }}" />
-                <!-- Replace $request->email with $email -->
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $email)" required autofocus autocomplete="username" />
+                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
             </div>
 
             <div class="mt-4">
@@ -35,4 +33,4 @@
             </div>
         </form>
     </x-authentication-card>
-</x-guest1-layout>
+</x-guest-layout>

@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('profile_photo_path', 2048)->nullable();
 
             // ✅ Custom fields for RBAC
-            $table->enum('role', ['expert', 'client', 'admin', 'superadmin', 'membrevalidation'])->default('client');
             $table->enum('status', ['active', 'inactive', 'suspended', 'pending_verification'])->default('pending_verification');
             
             $table->rememberToken();

@@ -1,4 +1,4 @@
-<x-guest1-layout>
+<x-guest-layout>
     <x-authentication-card>
         <x-slot name="logo">
             <x-authentication-card-logo />
@@ -9,50 +9,36 @@
         <form method="POST" action="{{ route('register') }}">
             @csrf
 
-            <!-- Name -->
             <div>
                 <x-label for="name" value="{{ __('Name') }}" />
                 <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
             </div>
 
-            <!-- Email -->
             <div class="mt-4">
                 <x-label for="email" value="{{ __('Email') }}" />
                 <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-                <p id="email-error" class="text-sm text-red-500 mt-1 hidden">Cette adresse e-mail est déjà utilisée.</p>
             </div>
 
-            <!-- Role -->
-            <div class="mt-4">
-                <x-label for="role" value="{{ __('I am registering as') }}" />
-                <select id="role" name="role" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
-                    <option value="client" {{ old('role', 'client') == 'client' ? 'selected' : '' }}>{{ __('Client') }}</option>
-                    <option value="expert" {{ old('role') == 'expert' ? 'selected' : '' }}>{{ __('Expert') }}</option>
-                </select>
-            </div>
-
-            <!-- Password -->
             <div class="mt-4">
                 <x-label for="password" value="{{ __('Password') }}" />
                 <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
             </div>
 
-            <!-- Confirm Password -->
             <div class="mt-4">
                 <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
                 <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
             </div>
 
-            <!-- Terms -->
             @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
                 <div class="mt-4">
                     <x-label for="terms">
                         <div class="flex items-center">
                             <x-checkbox name="terms" id="terms" required />
+
                             <div class="ms-2">
                                 {!! __('I agree to the :terms_of_service and :privacy_policy', [
-                                        'terms_of_service' => '<a target="_blank" href="'.route('terms.show').'" class="underline text-sm text-gray-600 hover:text-gray-900">'.__('Terms of Service').'</a>',
-                                        'privacy_policy' => '<a target="_blank" href="'.route('policy.show').'" class="underline text-sm text-gray-600 hover:text-gray-900">'.__('Privacy Policy').'</a>',
+                                        'terms_of_service' => '<a target="_blank" href="'.route('terms.show').'" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">'.__('Terms of Service').'</a>',
+                                        'privacy_policy' => '<a target="_blank" href="'.route('policy.show').'" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">'.__('Privacy Policy').'</a>',
                                 ]) !!}
                             </div>
                         </div>
@@ -60,7 +46,6 @@
                 </div>
             @endif
 
-            <!-- Register Button -->
             <div class="flex items-center justify-end mt-4">
                 <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
                     {{ __('Already registered?') }}
@@ -72,33 +57,4 @@
             </div>
         </form>
     </x-authentication-card>
-
-    <!-- Axios + Email check -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const emailInput = document.getElementById('email');
-            const emailError = document.getElementById('email-error');
-
-            emailInput.addEventListener('blur', function () {
-                const email = this.value;
-
-                if (email.length > 3) {
-                    axios.get('/api/check-email', { params: { email } })
-                        .then(response => {
-                            if (response.data.exists) {
-                                emailInput.classList.add('border-red-500');
-                                emailError.classList.remove('hidden');
-                            } else {
-                                emailInput.classList.remove('border-red-500');
-                                emailError.classList.add('hidden');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Erreur lors de la vérification de l’e-mail:', error);
-                        });
-                }
-            });
-        });
-    </script>
-</x-guest1-layout>
+</x-guest-layout>

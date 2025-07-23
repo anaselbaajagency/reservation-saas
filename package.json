@@ -20,7 +20,7 @@
     },
     "name": "reservation-saas",
     "version": "1.0.0",
-    "description": "Un système de réservation en ligne développé avec Laravel + Vite.",
+    "description": "Un syst\u00e8me de r\u00e9servation en ligne d\u00e9velopp\u00e9 avec Laravel + Vite.",
     "main": "vite.config.js",
     "directories": {
         "test": "tests"

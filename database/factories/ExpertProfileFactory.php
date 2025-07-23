@@ -10,7 +10,11 @@ class ExpertProfileFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => User::factory()->create(['role' => 'expert'])->id,
+            'user_id' => function () {
+                $user = User::factory()->create();
+                $user->assignRole('expert'); // Spatie Role assignment
+                return $user->id;
+            },
             'biography' => $this->faker->paragraphs(3, true),
             'hourly_rate' => $this->faker->randomFloat(2, 20, 200),
             'verified' => $this->faker->boolean(70),
@@ -22,7 +26,7 @@ class ExpertProfileFactory extends Factory
             ]),
             'certifications' => implode(', ', $this->faker->words(3)),
             'languages' => 'English, Spanish',
-            'timezone' => $this->faker->timezone
+            'timezone' => $this->faker->timezone,
         ];
     }
 }

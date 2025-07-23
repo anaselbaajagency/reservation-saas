@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -11,14 +11,17 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements MustVerifyEmail
+
+class User extends Authenticatable
 {
     use HasApiTokens;
+
+    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
-    use HasRoles; // This replaces the need for a 'role' column
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -29,7 +32,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'status', // Remove 'role' as we'll use Spatie's roles
     ];
 
     /**
@@ -65,63 +67,25 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
-
-    /**
-     * Check if user has admin or superadmin role.
-     */
-    public function isAdmin(): bool
-    {
-        return $this->hasAnyRole(['admin', 'superadmin']);
-    }
-
-    /**
-     * Check if user has membrevalidation role.
-     */
-    public function isMembrevalidation(): bool
-    {
-        return $this->hasRole('membrevalidation');
-    }
-
-    /**
-     * Check if user has expert role.
-     */
-    public function isExpert(): bool
-    {
-        return $this->hasRole('expert');
-    }
-
-    /**
-     * Check if user has client role.
-     */
-    public function isClient(): bool
-    {
-        return $this->hasRole('client');
-    }
-
-    /**
-     * Check if user is pending verification.
-     */
-    public function isPendingVerification(): bool
-    {
-        return $this->status === 'pending_verification';
-    }
-
-    /**
-     * Send email verification notification.
-     */
-    public function sendEmailVerificationNotification()
-    {
-        $this->notify(new \Illuminate\Auth\Notifications\VerifyEmail);
-    }
-
-    /**
-     * Mark email as verified and activate account.
-     */
-    public function markEmailAsVerified()
-    {
-        $this->forceFill([
-            'email_verified_at' => $this->freshTimestamp(),
-            'status' => 'active',
-        ])->save();
-    }
+    // User model
+// app/Models/User.php
+public function expertProfile()
+{
+    return $this->hasOne(ExpertProfile::class);
 }
+// app/Models/ExpertProfile.php
+public function specialties()
+{
+    return $this->belongsToMany(Specialty::class, 'expert_specialties', 'expert_profile_id', 'specialty_id');
+}
+public function getDomainsAttribute()
+{
+    return $this->expertProfile->specialties->take(5); // First 5 as domains
+}
+
+public function getSecteursAttribute()
+{
+    return $this->expertProfile->specialties->slice(5); // Rest as secteurs
+}
+}
+

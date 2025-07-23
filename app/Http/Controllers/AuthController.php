@@ -51,7 +51,8 @@ class AuthController extends Controller
     }
 
     // 🔐 Connecte l’utilisateur
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
@@ -60,6 +61,26 @@ class AuthController extends Controller
         if (Auth::attempt($request->only('email', 'password'))) {
             $request->session()->regenerate();
 
+            $user = Auth::user();
+
+            // Redirect to role-specific dashboard
+            if ($user->hasRole('superadmin')) {
+                return redirect()->intended(route('superadmin.dashboard'));
+            }
+            
+            if ($user->hasRole('admin')) {
+                return redirect()->intended(route('admin.dashboard'));
+            }
+            
+            if ($user->hasRole('expert')) {
+                return redirect()->intended(route('expert.dashboard'));
+            }
+            
+            if ($user->hasRole('client')) {
+                return redirect()->intended(route('client.dashboard'));
+            }
+            
+            // Fallback to general dashboard
             return redirect()->intended('/dashboard');
         }
 

@@ -30,13 +30,19 @@ class ExpertProfile extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
-        return $this->belongsToMany(Specialty::class, 'expert_specialties');
+    }
+
+    public function specialties()
+    {
+        return $this->belongsToMany(Specialty::class, 'expert_specialties', 'expert_profile_id', 'specialty_id')
+                    ->withTimestamps();
     }
 
     public function reviews()
     {
         return $this->hasMany(Review::class);
     }
+
     public function payments()
     {
         return $this->hasManyThrough(
@@ -46,6 +52,7 @@ class ExpertProfile extends Model
             'appointment_id'
         );
     }
+
     public function favorites()
     {
         return $this->hasMany(ClientFavorite::class);
@@ -65,4 +72,5 @@ class ExpertProfile extends Model
     {
         return $this->hasMany(ServicePackage::class);
     }
+   
 }

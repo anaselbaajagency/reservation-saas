@@ -6,20 +6,19 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        
         $this->call([
+            RolesAndPermissionsSeeder::class,
             UserSeeder::class,
-            ExpertProfileSeeder::class,
             SpecialtySeeder::class,
+            ExpertProfileSeeder::class,
             AvailabilitySlotSeeder::class,
             ReviewSeeder::class,
             PaymentSeeder::class,
-            PaymentMethodSeeder::class
+            PaymentMethodSeeder::class,
+            NotificationSeeder::class,
+            ConsultationSessionSeeder::class,
         ]);
     }
 }
