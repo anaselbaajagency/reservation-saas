@@ -6,6 +6,8 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\ExpertController;
+use App\Http\Controllers\Superadmin\SettingsController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Models\User;
 use App\Http\Controllers\Superadmin\DashboardController as SuperadminDashboardController;
@@ -97,7 +99,18 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])
     ->name('superadmin.')
     ->group(function () {
         Route::get('/dashboard', [SuperadminDashboardController::class, 'index'])->name('dashboard');
-        
+
+        // Expert management
+        Route::resource('experts', ExpertController::class)->names([
+            'index' => 'experts.index',
+            'create' => 'experts.create',
+            'store' => 'experts.store',
+            'show' => 'experts.show',
+            'edit' => 'experts.edit',
+            'update' => 'experts.update',
+            'destroy' => 'experts.destroy'
+        ]);
+
         // Role management
         Route::resource('roles', RoleController::class)
             ->except(['show'])
@@ -109,21 +122,18 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])
                 'update'  => 'roles.update',
                 'destroy' => 'roles.destroy',
             ]);
-        
+
         // Reservation management
         Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
         Route::get('/reservations/create', [ReservationController::class, 'create'])
-    ->name('reservations.create');
+            ->name('reservations.create');
 
-    });
-
-// Admin Routes
-Route::middleware(['auth', 'verified', 'role:admin'])
-    ->prefix('admin')
-    ->name('admin.')
-    ->group(function () {
-        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-        Route::resource('roles', RoleController::class)->except(['show']);
+        // Settings routes
+        Route::prefix('settings')->name('settings.')->group(function() {
+            Route::get('/', [SettingsController::class, 'index'])->name('index');
+            Route::get('/edit', [SettingsController::class, 'edit'])->name('edit');
+            Route::put('/', [SettingsController::class, 'update'])->name('update');
+        });
     });
 
 // Expert Routes
