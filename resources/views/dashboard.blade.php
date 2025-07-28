@@ -32,18 +32,28 @@
                         </div>
                     </div>
                 @else
-                    {{-- Your role-based dashboard content --}}
+                    {{-- Dynamic Content Based on Route --}}
                     @auth
-                        @if(auth()->user()->hasRole('superadmin'))
-                            @include('superadmin.dashboard')
-                        @elseif(auth()->user()->hasRole('admin'))
-                            @include('admin.dashboard')
-                        @elseif(auth()->user()->hasRole('expert'))
-                            @include('expert.dashboard')
-                        @elseif(auth()->user()->hasRole('membre_validation'))
-                            @include('membre_validation.dashboard')
+                        @if(request()->is('client/expert/*'))
+                            {{-- Expert Profile View --}}
+                            @include('client.expert-show')
+                        @elseif(request()->is('reservations/create/*'))
+                            {{-- Reservation create --}}
+                            @include('reservations.create')
                         @else
-                            @include('client.dashboard')   
+                            {{-- Role-based Dashboard --}}
+                            @if(auth()->user()->hasRole('superadmin'))
+                                @include('superadmin.dashboard')
+                            @elseif(auth()->user()->hasRole('admin'))
+                                @include('admin.dashboard')
+                            @elseif(auth()->user()->hasRole('expert'))
+                                @include('expert.dashboard')
+                            @elseif(auth()->user()->hasRole('membre_validation'))
+                                @include('membre_validation.dashboard')
+                            @else
+                                {{-- Default Client Dashboard --}}
+                                @include('client.dashboard')   
+                            @endif
                         @endif
                     @endauth
                 @endif

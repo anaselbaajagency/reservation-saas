@@ -8,10 +8,11 @@ use Illuminate\Http\Request;
 class DashboardController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Display the expert dashboard.
      */
-    public function __invoke(Request $request)
+    public function index()
     {
-        //
+        return view('dashboard');
+        // Add any expert-specific data you need to pass to the view
     }
 }

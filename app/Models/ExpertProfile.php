@@ -72,5 +72,12 @@ class ExpertProfile extends Model
     {
         return $this->hasMany(ServicePackage::class);
     }
-   
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class, 'expert_profile_id');
+    }
+    public function appointments()
+{
+    return $this->hasMany(Reservation::class, 'expert_profile_id');
+}
 }

@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Http\Controllers\Superadmin\DashboardController as SuperadminDashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
+use App\Http\Controllers\Expert\DashboardController as ExpertDashboardController;
 
 // =====================
 // PUBLIC ROUTES (Guest only)
@@ -21,7 +22,6 @@ Route::middleware('guest')->group(function () {
     Route::view('/welcome', 'welcome')->name('welcome');
     Route::view('/experts', 'pages.experts')->name('experts');
     Route::view('/expert/show', 'pages.expert-show')->name('expert.show');
-    Route::view('/reservation/form', 'pages.reservation-form')->name('reservation.form');
     Route::view('/terms', 'terms')->name('terms');
     Route::view('/privacy', 'policy')->name('policy');
 
@@ -29,7 +29,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']); // This will redirect to /dashboard after successful login
+    Route::post('/login', [AuthController::class, 'login']);
 
     // Password reset routes
     Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
@@ -74,10 +74,17 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     // Main dashboard (static - gets data from session)
     Route::get('/dashboard', function () {
-        // Get data from session (set by role controllers)
         $data = session()->get('dashboard_data', []);
         return view('dashboard', $data);
     })->name('dashboard');
+
+    // Reservation routes for all authenticated users
+    Route::prefix('reservations')->group(function () {
+        Route::get('/create/{expertProfile}', [ReservationController::class, 'create'])
+            ->name('reservations.create');
+        Route::post('/', [ReservationController::class, 'store'])
+            ->name('reservations.store');
+    });
 });
 
 // =====================
@@ -105,8 +112,9 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])
         
         // Reservation management
         Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
-        Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
-        Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
+        Route::get('/reservations/create', [ReservationController::class, 'create'])
+    ->name('reservations.create');
+
     });
 
 // Admin Routes
@@ -115,8 +123,6 @@ Route::middleware(['auth', 'verified', 'role:admin'])
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-        
-        // Role management for admins
         Route::resource('roles', RoleController::class)->except(['show']);
     });
 
@@ -125,9 +131,7 @@ Route::middleware(['auth', 'verified', 'role:expert'])
     ->prefix('expert')
     ->name('expert.')
     ->group(function () {
-        Route::get('/dashboard', function() {
-            return view('expert.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [ExpertDashboardController::class, 'index'])->name('dashboard');
     });
 
 // Client Routes
@@ -136,28 +140,20 @@ Route::middleware(['auth', 'verified', 'role:client'])
     ->name('client.')
     ->group(function () {
         Route::get('/dashboard', [ClientDashboardController::class, 'index'])->name('dashboard');
-        Route::get('/expert/{expert}', [ClientDashboardController::class, 'showExpert'])->name('expert.show');
+        Route::get('/expert/{expertProfile}', [ClientDashboardController::class, 'showExpert'])
+            ->name('expert.show');
     });
 
 // =====================
 // PERMISSION-BASED ROUTES
 // =====================
-
-// Reservation permissions
 Route::middleware(['auth', 'verified', 'permission:view reservations'])->group(function() {
     Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
-});
-
-Route::middleware(['auth', 'verified', 'permission:create reservations'])->group(function() {
-    Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
-    Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
 });
 
 // =====================
 // UTILITY ROUTES
 // =====================
-
-// AJAX email check (public)
 Route::get('/check-email', function (Request $request) {
     return response()->json([
         'exists' => User::where('email', $request->email)->exists()
