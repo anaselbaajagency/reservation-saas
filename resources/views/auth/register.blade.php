@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-guest1-layout>
     <x-authentication-card>
         <x-slot name="logo">
             <x-authentication-card-logo />
@@ -17,6 +17,15 @@
             <div class="mt-4">
                 <x-label for="email" value="{{ __('Email') }}" />
                 <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
+            </div>
+
+            
+            <div class="mt-4">
+                <x-label for="role" value="{{ __('I am registering as') }}" />
+                <select id="role" name="role" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                    <option value="client" {{ old('role', 'client') == 'client' ? 'selected' : '' }}>{{ __('Client') }}</option>
+                    <option value="expert" {{ old('role') == 'expert' ? 'selected' : '' }}>{{ __('Expert') }}</option>
+                </select>
             </div>
 
             <div class="mt-4">
@@ -57,4 +66,4 @@
             </div>
         </form>
     </x-authentication-card>
-</x-guest-layout>
+</x-guest1-layout>
