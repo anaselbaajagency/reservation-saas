@@ -20,7 +20,7 @@
             <nav class="navbar navbar-expand-lg header-light bg-white responsive-sticky">
                 <div class="container-fluid">
                     <div class="col-auto col-lg-2 me-lg-0 me-auto">
-                        <a class="navbar-brand" href="demo-accounting.html">
+                        <a class="navbar-brand" href="{{route('home')}}">
                             <img src="images/demo-accounting-logo-black.png" data-at2x="images/demo-accounting-logo-black@2x.png" alt="" class="default-logo">
                             <img src="images/demo-accounting-logo-black.png" data-at2x="images/demo-accounting-logo-black@2x.png" alt="" class="alt-logo">
                             <img src="images/demo-accounting-logo-black.png" data-at2x="images/demo-accounting-logo-black@2x.png" alt="" class="mobile-logo"> 
@@ -36,13 +36,13 @@
                         <div class="collapse navbar-collapse" id="navbarNav"> 
                             <ul class="navbar-nav fw-600">
                                 <li class="nav-item"><a href="{{ route('home') }}" class="nav-link">Home</a></li> 
-                                <li class="nav-item"><a href="demo-accounting-services.html" class="nav-link">Our experts</a></li>
+                                <li class="nav-item"><a href="{{route('experts')}}" class="nav-link">Our experts</a></li>
                                 <li class="nav-item"><a href="demo-accounting-process.html" class="nav-link">Categories</a></li>
                                 <li class="nav-item"><a href="demo-accounting-news.html" class="nav-link">Blog</a></li> 
                                 <li class="nav-item"><a href="demo-accounting-contact.html" class="nav-link">Contact Us</a></li>
                             </ul>
                         </div>
-                        <div class="col-auto col-lg-2 text-end d-none d-sm-flex">
+                    </div>
                 @auth
                     <!-- User dropdown when authenticated -->
                     <div class="dropdown">
@@ -74,9 +74,9 @@
                     </div>
                 @else
                     <!-- Guest view with login button and user icon -->
-                    <div class="d-flex align-items-center">
-                        <a href="{{ route('login') }}" class="text-dark">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 24px; height: 24px;">
+                    <div class="col-auto col-lg-2 text-end d-none d-sm-flex">
+                        <a href="{{ route('login') }}" class="header-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="header-button" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 24px; height: 24px;">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                         </a>
