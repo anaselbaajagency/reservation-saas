@@ -1,7 +1,7 @@
 name: 📊 Generate Project Report
 
 on:
-  workflow_dispatch:  # You can trigger it manually
+  workflow_dispatch:
 
 jobs:
   generate-report:
@@ -17,7 +17,7 @@ jobs:
         echo "## 📁 Repository: ${{ github.repository }}" >> report.md
         echo "## 👤 Author: ${{ github.actor }}" >> report.md
         echo "## 🗓 Date: $(date)" >> report.md
-
+        echo "" >> report.md
         echo "## 🔁 Last 10 Git Commits:" >> report.md
         git log --pretty=format:"- %h %an %s (%cr)" -n 10 >> report.md
 
@@ -26,5 +26,5 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add report.md
-        git commit -m "📊 Add auto-generated project report"
+        git commit -m "📊 Add auto-generated project report" || echo "No changes to commit"
         git push
